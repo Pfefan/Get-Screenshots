@@ -1,10 +1,9 @@
 """Module imports"""
 import random
-import shutil  # to save it locally
 import string
 
 import cfscrape
-import requests  # to get image from the web
+import requests
 from bs4 import BeautifulSoup
 
 class Imagehandler():
@@ -20,7 +19,7 @@ class Imagehandler():
         """main func to call all functions"""
 
         self.imagelimit = input("enter how many pictures you want: ")
-        while int(self.imagelimit) >= self.imagecount:
+        while int(self.imagelimit) > self.imagecount:
             self.urlget()
             self.imagecount += 1
 
@@ -40,23 +39,24 @@ class Imagehandler():
         for i in images:
             out = str(i).split('"')
             self.sorted_list.append(out[1])
-        try:
-            self.download(self.sorted_list[10])
-        except:
-            pass
+
+        self.download(self.sorted_list[10])
+
 
     def download(self, imgurl):
         """Download image from URL"""
 
-        image_url = imgurl
-        filename = image_url.split("/")[-1]
+        if imgurl.split("/")[2] == "st.prntscr.com":
+            imgurl = "http:" + imgurl
+        print(imgurl)
+        filename = imgurl.split("/")[-1]
 
-        r = requests.get(image_url, stream = True)
-        r.raw.decode_content = True
-        if r.status_code == 200:
-            r.raw.decode_content = True
+        response = requests.get(imgurl, headers={'User-Agent': 'Chrome'})
+
+        print(response.status_code)
+        if response.status_code == 200:
             with open("screenshots/" + filename,'wb') as f:
-                shutil.copyfileobj(r.raw, f)
+                f.write(response.content)
         else:
             pass
 
