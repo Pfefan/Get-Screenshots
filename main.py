@@ -4,6 +4,7 @@ import os
 import random
 import string
 import time
+import math
 from datetime import datetime
 from threading import Thread
 
@@ -53,17 +54,23 @@ _________                                         .__            __
                 for i in itertools.combinations(fulllist, 6):
                  self.urlget(self.url + "".join(i))
             self.imgcount += 1
-        print("\n")
+        time.sleep(1.1)
         input("press any key to continue...")
 
     def interface(self):
         """Print info about the programm"""
-
+        line_length = 50
         start = datetime.now()
+        print(f"[{'-'*(line_length)}]", end="\r")
         while int(self.imglimit) > self.imgcount:
             elapsed_time = datetime.now()-start
-            print(f"pictures {self.imgcount+1}/{self.imglimit} ({int(100*int(self.imgcount+1)/int(self.imglimit))}%), errors: {self.errors} | elapsed time: {elapsed_time}", end="\r")
+            percent = (self.imgcount)/int(self.imglimit)
+            print(f"[{'#'*math.ceil(line_length*percent)}{'-'*math.ceil(line_length*(1-percent))}]"+
+            f" {self.imgcount}|{self.imglimit}, errors: {self.errors},"+
+            f"elapsed time: {elapsed_time}", end="\r")
             time.sleep(1)
+        print(f"[{'#'*(line_length+1)}]  {self.imgcount}|{self.imglimit}, errors: {self.errors}, "+
+        f"elapsed time: {elapsed_time}")
 
     def urlget(self, url):
         """funtion to get urls of pictures"""
